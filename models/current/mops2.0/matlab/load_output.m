@@ -1,4 +1,4 @@
-base_path='/data2/spk/TransportMatrixConfigs/MITgcm_2.8deg';
+base_path='~/Desktop/MITgcm_2.8deg';
 
 load(fullfile(base_path,'config_data'))
 

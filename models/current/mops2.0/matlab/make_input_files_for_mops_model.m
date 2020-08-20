@@ -1,5 +1,5 @@
 % Set toplevel path to GCMs configuration
-base_path='/data2/spk/TransportMatrixConfigs/MITgcm_2.8deg';
+base_path='~/Desktop/MITgcm_2.8deg';
 % base_path='/data2/spk/TransportMatrixConfigs/MITgcm_ECCO';
 % base_path='/data2/spk/TransportMatrixConfigs/MITgcm_ECCO_v4';
 

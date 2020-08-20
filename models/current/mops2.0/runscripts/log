@@ -1,0 +1,263 @@
+Number of tracers to be integrated: 9
+Start time step for StepTimer object write_ is 1
+Fixed interval of 720 specified for StepTimer object write_
+Start time step for StepTimer object avg_ is 1
+Fixed interval of 60 specified for StepTimer object avg_
+Time averages will be computed starting at (and including) time step: 1
+Time averages will be computed over 60 time steps
+Time averages will be written to:
+   Tracer 0: po4avg.petsc
+   Tracer 1: dopavg.petsc
+   Tracer 2: oxyavg.petsc
+   Tracer 3: phyavg.petsc
+   Tracer 4: zooavg.petsc
+   Tracer 5: detavg.petsc
+   Tracer 6: no3avg.petsc
+   Tracer 7: dicavg.petsc
+   Tracer 8: alkavg.petsc
+Time averages will overwrite existing file(s)
+Time average output times will be written to time_average_output_time.txt
+Done reading gStartIndices.bin
+Done reading gEndIndices.bin
+Total number of profiles specified: 4448
+Partitioning by number of boxes
+Number of profiles (total length) on processor 0 = 2143 (26370)
+Number of profiles (total length) on processor 1 = 2305 (26379)
+Periodic matrices specified
+Ae basename is Ae_
+Ai basename is Ai_
+Assuming equally-spaced fields for periodic object matrix_
+Periodic object matrix_ specified at times:
+tdp=  -0.04167
+tdp=   0.04167
+tdp=   0.12500
+tdp=   0.20833
+tdp=   0.29167
+tdp=   0.37500
+tdp=   0.45833
+tdp=   0.54167
+tdp=   0.62500
+tdp=   0.70833
+tdp=   0.79167
+tdp=   0.87500
+tdp=   0.95833
+tdp=   1.04167
+Matrix size is 52749 x 52749
+Output will be written to:
+   Tracer 0: po4.petsc
+   Tracer 1: dop.petsc
+   Tracer 2: oxy.petsc
+   Tracer 3: phy.petsc
+   Tracer 4: zoo.petsc
+   Tracer 5: det.petsc
+   Tracer 6: no3.petsc
+   Tracer 7: dic.petsc
+   Tracer 8: alk.petsc
+Output will overwrite existing file(s)
+Output times will be written to output_time.txt
+Final pickup will be written to pickup.petsc
+Tracer 0: reading initial condition from file po4ini.petsc
+Tracer 1: reading initial condition from file dopini.petsc
+Tracer 2: reading initial condition from file oxyini.petsc
+Tracer 3: reading initial condition from file phyini.petsc
+Tracer 4: reading initial condition from file zooini.petsc
+Tracer 5: reading initial condition from file detini.petsc
+Tracer 6: reading initial condition from file no3ini.petsc
+Tracer 7: reading initial condition from file dicini.petsc
+Tracer 8: reading initial condition from file alkini.petsc
+No forcing from file(s) specified
+External forcing is being used
+Biogeochem model will be time-stepped independently
+Number of biogeochem model time steps per ocean time step = 8
+Number of euphotic zone layers is 6 
+Ocean time step for BGC length is  43200.0000000 seconds
+Number of days per year is  360.0000000
+Check: using a year length of      360.000 days 
+Theoretical ocean time step length for BGC is then  43200.0000000 seconds
+Periodic biogeochemical forcing specified
+Assuming equally-spaced fields for periodic object periodic_biogeochem_
+Periodic object periodic_biogeochem_ specified at times:
+tdp=  -0.04167
+tdp=   0.04167
+tdp=   0.12500
+tdp=   0.20833
+tdp=   0.29167
+tdp=   0.37500
+tdp=   0.45833
+tdp=   0.54167
+tdp=   0.62500
+tdp=   0.70833
+tdp=   0.79167
+tdp=   0.87500
+tdp=   0.95833
+tdp=   1.04167
+Done reading T/S
+Using prescribed atmospheric pCO2
+Using fixed atmospheric pCO2 of 280. ppm
+Using Burial-Runoff model
+Runoff will be integrated over every 720 time steps
+Using initial runoff of 0. Gmol P/d
+Final runoff output will be written to pickup_runoff.bin
+Runoff will be distributed over total ocean area of 3.30385e+14
+Number of vertical layers is 15 
+Initializing PeriodicVec object Ts_
+Reading vector from file Ts_00
+Reading vector from file Ts_01
+Reading vector from file Ts_02
+Reading vector from file Ts_03
+Reading vector from file Ts_04
+Reading vector from file Ts_05
+Reading vector from file Ts_06
+Reading vector from file Ts_07
+Reading vector from file Ts_08
+Reading vector from file Ts_09
+Reading vector from file Ts_10
+Reading vector from file Ts_11
+Initializing PeriodicVec object Ss_
+Reading vector from file Ss_00
+Reading vector from file Ss_01
+Reading vector from file Ss_02
+Reading vector from file Ss_03
+Reading vector from file Ss_04
+Reading vector from file Ss_05
+Reading vector from file Ss_06
+Reading vector from file Ss_07
+Reading vector from file Ss_08
+Reading vector from file Ss_09
+Reading vector from file Ss_10
+Reading vector from file Ss_11
+Initializing PeriodicArray object fice_ with 1 value(s) per profile
+Reading data from file fice_00
+Reading data from file fice_01
+Reading data from file fice_02
+Reading data from file fice_03
+Reading data from file fice_04
+Reading data from file fice_05
+Reading data from file fice_06
+Reading data from file fice_07
+Reading data from file fice_08
+Reading data from file fice_09
+Reading data from file fice_10
+Reading data from file fice_11
+Initializing PeriodicArray object wind_ with 1 value(s) per profile
+Reading data from file wind_00
+Reading data from file wind_01
+Reading data from file wind_02
+Reading data from file wind_03
+Reading data from file wind_04
+Reading data from file wind_05
+Reading data from file wind_06
+Reading data from file wind_07
+Reading data from file wind_08
+Reading data from file wind_09
+Reading data from file wind_10
+Reading data from file wind_11
+Initializing PeriodicArray object atmosp_ with 1 value(s) per profile
+Reading data from file atmosp_00
+Reading data from file atmosp_01
+Reading data from file atmosp_02
+Reading data from file atmosp_03
+Reading data from file atmosp_04
+Reading data from file atmosp_05
+Reading data from file atmosp_06
+Reading data from file atmosp_07
+Reading data from file atmosp_08
+Reading data from file atmosp_09
+Reading data from file atmosp_10
+Reading data from file atmosp_11
+Initializing PeriodicArray object EmP_ with 1 value(s) per profile
+Reading data from file EmP_00
+Reading data from file EmP_01
+Reading data from file EmP_02
+Reading data from file EmP_03
+Reading data from file EmP_04
+Reading data from file EmP_05
+Reading data from file EmP_06
+Reading data from file EmP_07
+Reading data from file EmP_08
+Reading data from file EmP_09
+Reading data from file EmP_10
+Reading data from file EmP_11
+Start time step for StepTimer object diag_ is 1
+Fixed interval of 60 specified for StepTimer object diag_
+Diagnostics will be computed starting at (and including) time step: 1
+Diagnostics will be computed over 60 time steps
+No prescribed BC's specified
+Writing output at time    0.00000, step 0
+Initializing PeriodicMat object Ae_
+Reading matrix from file Ae_00
+Reading matrix from file Ae_01
+Reading matrix from file Ae_02
+Reading matrix from file Ae_03
+Reading matrix from file Ae_04
+Reading matrix from file Ae_05
+Reading matrix from file Ae_06
+Reading matrix from file Ae_07
+Reading matrix from file Ae_08
+Reading matrix from file Ae_09
+Reading matrix from file Ae_10
+Reading matrix from file Ae_11
+Initializing PeriodicMat object Ai_
+Reading matrix from file Ai_00
+Reading matrix from file Ai_01
+Reading matrix from file Ai_02
+Reading matrix from file Ai_03
+Reading matrix from file Ai_04
+Reading matrix from file Ai_05
+Reading matrix from file Ai_06
+Reading matrix from file Ai_07
+Reading matrix from file Ai_08
+Reading matrix from file Ai_09
+Reading matrix from file Ai_10
+Reading matrix from file Ai_11
+Writing diagnostics time average at time    0.08333, step 60
+Updating StepTimer object diag_ at iter 60
+Writing time average at time    0.08333, step 60
+Updating StepTimer object avg_ at iter 60
+Writing diagnostics time average at time    0.16667, step 120
+Updating StepTimer object diag_ at iter 120
+Writing time average at time    0.16667, step 120
+Updating StepTimer object avg_ at iter 120
+Writing diagnostics time average at time    0.25000, step 180
+Updating StepTimer object diag_ at iter 180
+Writing time average at time    0.25000, step 180
+Updating StepTimer object avg_ at iter 180
+Writing diagnostics time average at time    0.33333, step 240
+Updating StepTimer object diag_ at iter 240
+Writing time average at time    0.33333, step 240
+Updating StepTimer object avg_ at iter 240
+Writing diagnostics time average at time    0.41667, step 300
+Updating StepTimer object diag_ at iter 300
+Writing time average at time    0.41667, step 300
+Updating StepTimer object avg_ at iter 300
+Writing diagnostics time average at time    0.50000, step 360
+Updating StepTimer object diag_ at iter 360
+Writing time average at time    0.50000, step 360
+Updating StepTimer object avg_ at iter 360
+Writing diagnostics time average at time    0.58333, step 420
+Updating StepTimer object diag_ at iter 420
+Writing time average at time    0.58333, step 420
+Updating StepTimer object avg_ at iter 420
+Writing diagnostics time average at time    0.66667, step 480
+Updating StepTimer object diag_ at iter 480
+Writing time average at time    0.66667, step 480
+Updating StepTimer object avg_ at iter 480
+Writing diagnostics time average at time    0.75000, step 540
+Updating StepTimer object diag_ at iter 540
+Writing time average at time    0.75000, step 540
+Updating StepTimer object avg_ at iter 540
+Writing diagnostics time average at time    0.83333, step 600
+Updating StepTimer object diag_ at iter 600
+Writing time average at time    0.83333, step 600
+Updating StepTimer object avg_ at iter 600
+Writing diagnostics time average at time    0.91667, step 660
+Updating StepTimer object diag_ at iter 660
+Writing time average at time    0.91667, step 660
+Updating StepTimer object avg_ at iter 660
+Writing diagnostics time average at time    1.00000, step 720
+Updating StepTimer object diag_ at iter 720
+Writing output at time    1.00000, step 720
+Updating StepTimer object write_ at iter 720
+Writing time average at time    1.00000, step 720
+Updating StepTimer object avg_ at iter 720
+Wall clock time:  539.15801
