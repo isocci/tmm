@@ -40,7 +40,8 @@ IPROGRAM = imops
 IRPROGRAM = irmops
 
 SRCTMM = tmm_main.c tmm_forward_step.c tmm_write.c tmm_forcing_utils.c \
-        tmm_profile_utils.c tmm_timer.c petsc_signal_utils.c petsc_matvec_utils.c
+        tmm_profile_utils.c tmm_timer.c petsc_signal_utils.c petsc_matvec_utils.c \
+				tmm_initialize.c
 
 SRCMODEL = tmm_external_bc.c tmm_monitor.c misfit_mops_biogeochem.c external_forcing_mops_biogeochem.c
 SRFMODEL = 	BGC_MODEL.F \
