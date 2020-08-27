@@ -19,9 +19,124 @@ static char help[] = "\n";
 #include "tmm_main.h"
 #include "tmm_initialize.h"
 
-int initialize(int argc,char **args){
+int initialize(int argc, char **args){
+        // local variables moved here from main --------------------------------
+        PetscInt numTracers, n;
+        Vec templateVec;
+        Vec *v, *vtmp;
+      /* TM's */
+        Mat Ae, Ai;
+        PeriodicMat Aep, Aip;
+        TimeDependentMat Aetd, Aitd;
+        char mateFile[PETSC_MAX_PATH_LEN], matiFile[PETSC_MAX_PATH_LEN], rfsFile[PETSC_MAX_PATH_LEN];
+        PetscBool periodicMatrix = PETSC_FALSE;
+        PetscBool timeDependentMatrix = PETSC_FALSE;
+        PeriodicTimer matrixPeriodicTimer;
+        TimeDependentTimer matrixTimeDependentTimer;
+
+      /* Forcing */
+        Vec *uf, *uef;
+        PeriodicVec up[MAXNUMTRACERS];
+        char *forcingFile[MAXNUMTRACERS];
+        PeriodicTimer forcingTimer;
+        PetscInt numForcing;
+        Vec **utdf;
+        PetscScalar *tdfT; /* array for time dependent (nonperiodic) forcing */
+        PetscScalar tf0, tf1;
+        PetscInt forcingFromFileCutOffStep = -1;
+        PetscInt externalForcingCutOffStep = -1;
+
+      /* Rescale forcing */
+        Vec Rfs;
+        PeriodicVec Rfsp;
+
+      /* BC's */
+        Vec *bcc, *bcf;
+        PeriodicVec bcp[MAXNUMTRACERS];
+        char *bcFile[MAXNUMTRACERS];
+        PetscInt numBC;
+        Vec **bctd;
+        PetscScalar *tdbcT; /* array for time dependent (nonperiodic) forcing */
+        PeriodicTimer bcTimer;
+        PetscScalar tbc0, tbc1;
+        PetscInt bcCutOffStep = -1;
+        Mat Be, Bi;
+        PeriodicMat Bep, Bip;
+        TimeDependentMat Betd, Bitd;
+        char matbeFile[PETSC_MAX_PATH_LEN], matbiFile[PETSC_MAX_PATH_LEN];
+        Vec bcTemplateVec;
+
+      /* I/O   */
+        char *iniFile[MAXNUMTRACERS];
+        char *outFile[MAXNUMTRACERS];
+        char *bcoutFile[MAXNUMTRACERS];
+        char *ufoutFile[MAXNUMTRACERS], *uefoutFile[MAXNUMTRACERS];
+        char pickupFile[PETSC_MAX_PATH_LEN];
+        char pickupoutFile[PETSC_MAX_PATH_LEN];
+        PetscBool writePickup = PETSC_FALSE;
+        StepTimer pickupTimer;
+        char outTimeFile[PETSC_MAX_PATH_LEN];
+        PetscBool appendOutput = PETSC_FALSE;
+        PetscFileMode OUTPUT_FILE_MODE;
+        PetscBool doWriteBC = PETSC_FALSE;
+        PetscBool doWriteUF = PETSC_FALSE;
+        PetscBool doWriteUEF = PETSC_FALSE;
+        PetscBool pickupFromFile = PETSC_FALSE;
+        PetscBool doTimeAverage = PETSC_FALSE;
+        StepTimer avgTimer;
+        char *avgOutFile[MAXNUMTRACERS];
+        Vec *vavg;
+        PetscViewer fdavgout[MAXNUMTRACERS];
+        PetscBool avgAppendOutput = PETSC_FALSE;
+        PetscFileMode AVG_FILE_MODE;
+        FILE *avgfptime;
+        char avgOutTimeFile[PETSC_MAX_PATH_LEN];
+        char *bcavgOutFile[MAXNUMTRACERS];
+        Vec *bcavg;
+        PetscViewer fdbcavgout[MAXNUMTRACERS];
+        char *ufavgOutFile[MAXNUMTRACERS], *uefavgOutFile[MAXNUMTRACERS];
+        Vec *ufavg, *uefavg;
+        PetscViewer fdufavgout[MAXNUMTRACERS], fduefavgout[MAXNUMTRACERS];
+        FILE *fptime;
+        PetscViewer fd, fdp, fdout[MAXNUMTRACERS];
+        PetscViewer fdbcout[MAXNUMTRACERS], fdufout[MAXNUMTRACERS], fduefout[MAXNUMTRACERS];
+
+      #if defined (FORSPINUP) || defined (FORJACOBIAN)
+        PetscViewer fdin[MAXNUMTRACERS];
+        PetscInt itjac;
+        int fp;
+      #endif
+
+      /* run time options */
+        PetscBool useExternalForcing = PETSC_FALSE;
+        PetscBool useForcingFromFile = PETSC_FALSE;
+        PetscBool usePrescribedBC = PETSC_FALSE;
+        PetscBool applyExternalForcing = PETSC_FALSE;
+        PetscBool applyForcingFromFile = PETSC_FALSE;
+        PetscBool applyBC = PETSC_FALSE;
+        PetscBool periodicForcing = PETSC_FALSE;
+        PetscBool timeDependentForcing = PETSC_FALSE;
+        PetscBool constantForcing = PETSC_FALSE;
+        PetscBool periodicBC = PETSC_FALSE;
+        PetscBool timeDependentBC = PETSC_FALSE;
+        PetscBool constantBC = PETSC_FALSE;
+        PetscBool doCalcBC = PETSC_FALSE;
+        PetscBool useMonitor = PETSC_FALSE;
+
+        PetscMPIInt numProcessors, myId;
+        PetscErrorCode ierr;
+        PetscBool flg1,flg2;
+        PetscScalar t1, t2, tc, tf;
+        PetscInt iLoop, Iterc;
+        PetscInt it;
+        PetscInt itr, maxValsToRead;
+        char tmpFile[PETSC_MAX_PATH_LEN];
+        PetscScalar zero = 0.0, one = 1.0;
+        PetscInt il;
+        //----------------------------------------------------------------------
+
+
         PetscInitialize(&argc,&args,(char *)0,help);
-//        PetscInitialize(&argc,&args,(char *)0,help);
         ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&myId); CHKERRQ(ierr);
         ierr = MPI_Comm_size(PETSC_COMM_WORLD,&numProcessors); CHKERRQ(ierr);
         myId=myId+1;         /* process ID (starting at 1) */

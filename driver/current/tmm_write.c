@@ -18,7 +18,7 @@ StepTimer extraWriteTimer;
 char *outFile[MAXNUMTRACERS];
 PetscFileMode OUTPUT_FILE_MODE;
 char outTimeFile[PETSC_MAX_PATH_LEN];
-// PetscBool appendOutput = PETSC_FALSE;
+PetscBool appendOutput = PETSC_FALSE;
 FILE *fptime;
 PetscViewer fdout[MAXNUMTRACERS];
 PetscInt numExtraTracers;
