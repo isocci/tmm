@@ -1,4 +1,4 @@
-extern int initialize(int argc, char **args);
+extern int initialize(int, char);
 
 extern PetscErrorCode iniTMMWrite(PetscScalar tc, PetscInt it, PetscInt ntr, Vec *v, PetscBool append);
 
