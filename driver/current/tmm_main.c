@@ -5,6 +5,10 @@
      petscsys.h    - system routines       petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers
  */
+
+static char help[] = "\n";
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -163,8 +167,8 @@ int main(int argc,char **args)
         PetscScalar zero = 0.0, one = 1.0;
         PetscInt il;
         //----------------------------------------------------------------------------
-
-        int status = initialize(argc, **args);
+        PetscInitialize(&argc,&args,(char *)0,help);
+        int status = initialize();
 
 /* Start time stepping loop */
         ierr = PetscTime(&t1); CHKERRQ(ierr); /* start counting wall clock time */

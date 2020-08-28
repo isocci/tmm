@@ -1,5 +1,3 @@
-static char help[] = "\n";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,7 +42,7 @@ PeriodicVec Rfsp;
 PetscInt numBC;
 //------------------------------------------------------------------------------
 
-int initialize(int argc, char **args){
+int initialize(){
         printf("Inizio initialize\n");
         // local variables copied here from main --------------------------------
         PetscInt numTracers, n;
@@ -139,17 +137,15 @@ int initialize(int argc, char **args){
         PetscMPIInt numProcessors, myId;
         PetscErrorCode ierr;
         PetscBool flg1,flg2;
-        PetscScalar t1, t2, tc, tf;
-        PetscInt iLoop, Iterc;
+//        PetscScalar t1, t2, tc, tf;
+//        PetscInt iLoop, Iterc;
         PetscInt it;
         PetscInt itr, maxValsToRead;
         char tmpFile[PETSC_MAX_PATH_LEN];
-        PetscScalar zero = 0.0, one = 1.0;
+        PetscScalar zero = 0.0; // one = 1.0;
         PetscInt il;
         //----------------------------------------------------------------------
 
-
-        PetscInitialize(&argc,&args,(char *)0,help);
         ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&myId); CHKERRQ(ierr);
         ierr = MPI_Comm_size(PETSC_COMM_WORLD,&numProcessors); CHKERRQ(ierr);
         myId=myId+1;         /* process ID (starting at 1) */
