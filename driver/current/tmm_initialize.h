@@ -1,8 +1,8 @@
-extern int initialize(int, char);
+extern int initialize(int, char **);
 
 extern PetscErrorCode iniTMMWrite(PetscScalar tc, PetscInt it, PetscInt ntr, Vec *v, PetscBool append);
 
-//fglobal in main---------------------------------------------------------------
+//global in main---------------------------------------------------------------
 extern PetscScalar deltaTClock, time0;
 extern PetscInt maxSteps, Iter0;
 extern StepTimer writeTimer;
@@ -13,7 +13,7 @@ extern PetscBool rescaleForcing;
 //------------------------------------------------------------------------------
 
 //variables made global in initialize-------------------------------------------
-extern Mat Ae, Ai;
+//extern Mat Ae, Ai;
 extern PeriodicMat Aep, Aip;
 extern TimeDependentMat Aetd, Aitd;
 

@@ -51,6 +51,8 @@ int initialize(int argc, char **args){
         Vec templateVec;
         Vec *v, *vtmp;
 
+        Mat Ae, Ai;
+
         /* TM's */
         char mateFile[PETSC_MAX_PATH_LEN], matiFile[PETSC_MAX_PATH_LEN], rfsFile[PETSC_MAX_PATH_LEN];
         PetscBool periodicMatrix = PETSC_FALSE;
