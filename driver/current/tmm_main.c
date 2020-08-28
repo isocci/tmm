@@ -55,8 +55,8 @@ int main(int argc,char **args)
   Vec *v, *vtmp;
 /* TM's */
   Mat Ae, Ai;
-  PeriodicMat Aep, Aip;
-  TimeDependentMat Aetd, Aitd;
+//  PeriodicMat Aep, Aip;
+//  TimeDependentMat Aetd, Aitd;
   char mateFile[PETSC_MAX_PATH_LEN], matiFile[PETSC_MAX_PATH_LEN], rfsFile[PETSC_MAX_PATH_LEN];
   PetscBool periodicMatrix = PETSC_FALSE;
   PetscBool timeDependentMatrix = PETSC_FALSE;
@@ -98,8 +98,8 @@ int main(int argc,char **args)
 /* I/O   */
   char *iniFile[MAXNUMTRACERS];
   char *outFile[MAXNUMTRACERS];
-  char *bcoutFile[MAXNUMTRACERS];
-  char *ufoutFile[MAXNUMTRACERS], *uefoutFile[MAXNUMTRACERS];
+//  char *bcoutFile[MAXNUMTRACERS];
+  char *ufoutFile[MAXNUMTRACERS]; // *uefoutFile[MAXNUMTRACERS];
   char pickupFile[PETSC_MAX_PATH_LEN];
   char pickupoutFile[PETSC_MAX_PATH_LEN];
   PetscBool writePickup = PETSC_FALSE;
@@ -140,12 +140,12 @@ int main(int argc,char **args)
   PetscBool useExternalForcing = PETSC_FALSE;
   PetscBool useForcingFromFile = PETSC_FALSE;
   PetscBool usePrescribedBC = PETSC_FALSE;
-  PetscBool applyExternalForcing = PETSC_FALSE;
-  PetscBool applyForcingFromFile = PETSC_FALSE;
+//  PetscBool applyExternalForcing = PETSC_FALSE;
+//  PetscBool applyForcingFromFile = PETSC_FALSE;
   PetscBool applyBC = PETSC_FALSE;
   PetscBool periodicForcing = PETSC_FALSE;
   PetscBool timeDependentForcing = PETSC_FALSE;
-  PetscBool constantForcing = PETSC_FALSE;
+//  PetscBool constantForcing = PETSC_FALSE;
   PetscBool periodicBC = PETSC_FALSE;
   PetscBool timeDependentBC = PETSC_FALSE;
   PetscBool constantBC = PETSC_FALSE;
@@ -158,7 +158,7 @@ int main(int argc,char **args)
   PetscScalar t1, t2, tc, tf;
   PetscInt iLoop, Iterc;
   PetscInt it;
-  PetscInt itr, maxValsToRead;
+  PetscInt itr; // maxValsToRead;
   char tmpFile[PETSC_MAX_PATH_LEN];
   PetscScalar zero = 0.0, one = 1.0;
   PetscInt il;

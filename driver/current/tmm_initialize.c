@@ -19,54 +19,67 @@ static char help[] = "\n";
 #include "tmm_main.h"
 #include "tmm_initialize.h"
 
+// variables made global -------------------------------------------------------
+Mat Ae, Ai;
+PeriodicMat Aep, Aip;
+TimeDependentMat Aetd, Aitd;
+
+Vec **utdf;
+PetscInt numForcing;
+char *forcingFile[MAXNUMTRACERS];
+
+PeriodicVec bcp[MAXNUMTRACERS];
+Vec **bctd;
+Mat Be, Bi;
+PeriodicMat Bep, Bip;
+TimeDependentMat Betd, Bitd;
+
+PeriodicVec up[MAXNUMTRACERS];
+
+PetscBool applyForcingFromFile = PETSC_FALSE;
+PetscBool applyExternalForcing = PETSC_FALSE;
+
+PeriodicVec Rfsp;
+
+PetscInt numBC;
+//------------------------------------------------------------------------------
+
 int initialize(int argc, char **args){
-        // local variables moved here from main --------------------------------
+        printf("Inizio initialize\n");
+        // local variables copied here from main --------------------------------
         PetscInt numTracers, n;
         Vec templateVec;
         Vec *v, *vtmp;
-      /* TM's */
-        Mat Ae, Ai;
-        PeriodicMat Aep, Aip;
-        TimeDependentMat Aetd, Aitd;
+
+        /* TM's */
         char mateFile[PETSC_MAX_PATH_LEN], matiFile[PETSC_MAX_PATH_LEN], rfsFile[PETSC_MAX_PATH_LEN];
         PetscBool periodicMatrix = PETSC_FALSE;
         PetscBool timeDependentMatrix = PETSC_FALSE;
         PeriodicTimer matrixPeriodicTimer;
         TimeDependentTimer matrixTimeDependentTimer;
 
-      /* Forcing */
+        /* Forcing */
         Vec *uf, *uef;
-        PeriodicVec up[MAXNUMTRACERS];
-        char *forcingFile[MAXNUMTRACERS];
         PeriodicTimer forcingTimer;
-        PetscInt numForcing;
-        Vec **utdf;
         PetscScalar *tdfT; /* array for time dependent (nonperiodic) forcing */
         PetscScalar tf0, tf1;
         PetscInt forcingFromFileCutOffStep = -1;
         PetscInt externalForcingCutOffStep = -1;
 
-      /* Rescale forcing */
+        /* Rescale forcing */
         Vec Rfs;
-        PeriodicVec Rfsp;
 
-      /* BC's */
+        /* BC's */
         Vec *bcc, *bcf;
-        PeriodicVec bcp[MAXNUMTRACERS];
         char *bcFile[MAXNUMTRACERS];
-        PetscInt numBC;
-        Vec **bctd;
         PetscScalar *tdbcT; /* array for time dependent (nonperiodic) forcing */
         PeriodicTimer bcTimer;
         PetscScalar tbc0, tbc1;
         PetscInt bcCutOffStep = -1;
-        Mat Be, Bi;
-        PeriodicMat Bep, Bip;
-        TimeDependentMat Betd, Bitd;
         char matbeFile[PETSC_MAX_PATH_LEN], matbiFile[PETSC_MAX_PATH_LEN];
         Vec bcTemplateVec;
 
-      /* I/O   */
+        /* I/O   */
         char *iniFile[MAXNUMTRACERS];
         char *outFile[MAXNUMTRACERS];
         char *bcoutFile[MAXNUMTRACERS];
@@ -107,12 +120,10 @@ int initialize(int argc, char **args){
         int fp;
       #endif
 
-      /* run time options */
+        /* run time options */
         PetscBool useExternalForcing = PETSC_FALSE;
         PetscBool useForcingFromFile = PETSC_FALSE;
         PetscBool usePrescribedBC = PETSC_FALSE;
-        PetscBool applyExternalForcing = PETSC_FALSE;
-        PetscBool applyForcingFromFile = PETSC_FALSE;
         PetscBool applyBC = PETSC_FALSE;
         PetscBool periodicForcing = PETSC_FALSE;
         PetscBool timeDependentForcing = PETSC_FALSE;
@@ -1001,5 +1012,6 @@ int initialize(int argc, char **args){
                 }
         }
 #endif
+        printf("Fine initialize\n");
         return 0;
 }
