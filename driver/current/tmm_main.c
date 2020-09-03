@@ -27,24 +27,7 @@ static char help[] = "\n";
 #include "tmm_misfit.h"
 #include "tmm_main.h"
 #include "tmm_initialize.h"
-
-PetscScalar deltaTClock, time0;
-PetscInt maxSteps, Iter0;
-StepTimer writeTimer;
-PetscInt *gIndices, gLow, gHigh;
-PetscInt *gBCIndices, lBCSize, gBCSize, gbcLow, gbcHigh;
-PetscBool doMisfit = PETSC_FALSE;
-PetscBool rescaleForcing = PETSC_FALSE;
-
-extern PetscErrorCode forwardStep(PetscScalar tc, PetscInt iLoop, PetscScalar dt, PetscInt numTracers,
-                                  PetscBool useForcingFromFile, PetscBool useExternalForcing, PetscBool usePrescribedBC,
-                                  Vec *v, Mat Ae, Mat Ai, Mat Be, Mat Bi, Vec *uf, Vec *uef, Vec *bcc, Vec *bcf, Vec *vtmp);
-
-extern PetscErrorCode iniTMMWrite(PetscScalar tc, PetscInt it, PetscInt ntr, Vec *v, PetscBool append);
-extern PetscErrorCode doTMMWrite(PetscScalar tc, PetscInt it, PetscInt ntr, Vec *v);
-extern PetscErrorCode finalizeTMMWrite(PetscScalar tc, PetscInt it, PetscInt ntr);
-
-extern PetscErrorCode waitForSignal(PetscInt waitTime);
+#include "tmm_variables.h"
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -52,125 +35,78 @@ extern PetscErrorCode waitForSignal(PetscInt waitTime);
 
 int main(int argc,char **args)
 {
-        //----------------------------------------------------------------------------
-
-        PetscInt numTracers, n;
-        Vec templateVec;
-        Vec *v, *vtmp;
-/* TM's */
+        //----------------------------------------------------------------------
+        PetscInt numTracers;
         Mat Ae, Ai;
-//  PeriodicMat Aep, Aip;
-//  TimeDependentMat Aetd, Aitd;
+
+// TM's
         char mateFile[PETSC_MAX_PATH_LEN], matiFile[PETSC_MAX_PATH_LEN], rfsFile[PETSC_MAX_PATH_LEN];
         PetscBool periodicMatrix = PETSC_FALSE;
         PetscBool timeDependentMatrix = PETSC_FALSE;
         PeriodicTimer matrixPeriodicTimer;
         TimeDependentTimer matrixTimeDependentTimer;
 
-/* Forcing */
-        Vec *uf, *uef;
-        PeriodicVec up[MAXNUMTRACERS];
-        char *forcingFile[MAXNUMTRACERS];
+// Forcing
         PeriodicTimer forcingTimer;
-        PetscInt numForcing;
-        Vec **utdf;
-        PetscScalar *tdfT; /* array for time dependent (nonperiodic) forcing */
-        PetscScalar tf0, tf1;
         PetscInt forcingFromFileCutOffStep = -1;
         PetscInt externalForcingCutOffStep = -1;
 
-/* Rescale forcing */
+//Rescale forcing
         Vec Rfs;
-        PeriodicVec Rfsp;
 
-/* BC's */
-        Vec *bcc, *bcf;
-        PeriodicVec bcp[MAXNUMTRACERS];
-        char *bcFile[MAXNUMTRACERS];
-        PetscInt numBC;
-        Vec **bctd;
-        PetscScalar *tdbcT; /* array for time dependent (nonperiodic) forcing */
+// BC's
         PeriodicTimer bcTimer;
-        PetscScalar tbc0, tbc1;
         PetscInt bcCutOffStep = -1;
-        Mat Be, Bi;
-        PeriodicMat Bep, Bip;
-        TimeDependentMat Betd, Bitd;
         char matbeFile[PETSC_MAX_PATH_LEN], matbiFile[PETSC_MAX_PATH_LEN];
-        Vec bcTemplateVec;
 
-/* I/O   */
-        char *iniFile[MAXNUMTRACERS];
-        char *outFile[MAXNUMTRACERS];
-//  char *bcoutFile[MAXNUMTRACERS];
-        char *ufoutFile[MAXNUMTRACERS]; // *uefoutFile[MAXNUMTRACERS];
-        char pickupFile[PETSC_MAX_PATH_LEN];
+// I/O
         char pickupoutFile[PETSC_MAX_PATH_LEN];
         PetscBool writePickup = PETSC_FALSE;
         StepTimer pickupTimer;
-        char outTimeFile[PETSC_MAX_PATH_LEN];
         PetscBool appendOutput = PETSC_FALSE;
-        PetscFileMode OUTPUT_FILE_MODE;
         PetscBool doWriteBC = PETSC_FALSE;
         PetscBool doWriteUF = PETSC_FALSE;
         PetscBool doWriteUEF = PETSC_FALSE;
-        PetscBool pickupFromFile = PETSC_FALSE;
         PetscBool doTimeAverage = PETSC_FALSE;
         StepTimer avgTimer;
-        char *avgOutFile[MAXNUMTRACERS];
-        Vec *vavg;
         PetscViewer fdavgout[MAXNUMTRACERS];
-        PetscBool avgAppendOutput = PETSC_FALSE;
-        PetscFileMode AVG_FILE_MODE;
-        FILE *avgfptime;
-        char avgOutTimeFile[PETSC_MAX_PATH_LEN];
-        char *bcavgOutFile[MAXNUMTRACERS];
-        Vec *bcavg;
         PetscViewer fdbcavgout[MAXNUMTRACERS];
-        char *ufavgOutFile[MAXNUMTRACERS], *uefavgOutFile[MAXNUMTRACERS];
-        Vec *ufavg, *uefavg;
         PetscViewer fdufavgout[MAXNUMTRACERS], fduefavgout[MAXNUMTRACERS];
-        FILE *fptime;
-        PetscViewer fd, fdp, fdout[MAXNUMTRACERS];
+        PetscViewer fdp, fdout[MAXNUMTRACERS];
         PetscViewer fdbcout[MAXNUMTRACERS], fdufout[MAXNUMTRACERS], fduefout[MAXNUMTRACERS];
-
-#if defined (FORSPINUP) || defined (FORJACOBIAN)
-        PetscViewer fdin[MAXNUMTRACERS];
-        PetscInt itjac;
-        int fp;
-#endif
-
-/* run time options */
+/*
+ #if defined (FORSPINUP) || defined (FORJACOBIAN)
+         PetscViewer fdin[MAXNUMTRACERS];
+         PetscInt itjac;
+         int fp;
+ #endif
+ */
+// run time options
         PetscBool useExternalForcing = PETSC_FALSE;
         PetscBool useForcingFromFile = PETSC_FALSE;
         PetscBool usePrescribedBC = PETSC_FALSE;
-//  PetscBool applyExternalForcing = PETSC_FALSE;
-//  PetscBool applyForcingFromFile = PETSC_FALSE;
         PetscBool applyBC = PETSC_FALSE;
         PetscBool periodicForcing = PETSC_FALSE;
         PetscBool timeDependentForcing = PETSC_FALSE;
-//  PetscBool constantForcing = PETSC_FALSE;
         PetscBool periodicBC = PETSC_FALSE;
         PetscBool timeDependentBC = PETSC_FALSE;
-        PetscBool constantBC = PETSC_FALSE;
         PetscBool doCalcBC = PETSC_FALSE;
         PetscBool useMonitor = PETSC_FALSE;
 
-        PetscMPIInt numProcessors, myId;
         PetscErrorCode ierr;
-        PetscBool flg1,flg2;
+
         PetscScalar t1, t2, tc, tf;
         PetscInt iLoop, Iterc;
-        PetscInt it;
-        PetscInt itr; // maxValsToRead;
+
+        PetscInt itr;
         char tmpFile[PETSC_MAX_PATH_LEN];
         PetscScalar zero = 0.0, one = 1.0;
-        PetscInt il;
-        //----------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+
         PetscInitialize(&argc,&args,(char *)0,help);
         int status = initialize();
 
-/* Start time stepping loop */
+        /* Start time stepping loop */
         ierr = PetscTime(&t1); CHKERRQ(ierr); /* start counting wall clock time */
         for (iLoop = 1; iLoop <= maxSteps; iLoop++) {
 /*  iLoop -> iLoop+1 (convention) */
@@ -324,7 +260,7 @@ int main(int argc,char **args)
                         }
                         if (writeTimer.count==writeTimer.numTimeSteps) { /* time to write out */
                                 ierr = PetscPrintf(PETSC_COMM_WORLD,"Writing output at time %10.5f, step %d\n", tc, Iter0+iLoop); CHKERRQ(ierr);
-                                ierr = PetscFPrintf(PETSC_COMM_WORLD,fptime,"%d   %10.5f\n",Iter0+iLoop,tc); CHKERRQ(ierr);
+                                //ierr = PetscFPrintf(PETSC_COMM_WORLD,fptime,"%d   %10.5f\n",Iter0+iLoop,tc); CHKERRQ(ierr);
                                 for (itr=0; itr<numTracers; itr++) {
                                         ierr = VecView(v[itr],fdout[itr]); CHKERRQ(ierr);
                                 }

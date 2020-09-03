@@ -36,8 +36,9 @@ VPATH = $(MYPATHS)
 EXE = tmm
 
 STMM = tmm_main.c tmm_forward_step.c tmm_write.c tmm_forcing_utils.c \
-       tmm_profile_utils.c tmm_timer.c petsc_signal_utils.c petsc_matvec_utils.c
-        
+       tmm_profile_utils.c tmm_timer.c petsc_signal_utils.c petsc_matvec_utils.c \
+			 tmm_initialize.c
+
 SRCTMM = $(STMM) tmm_external_forcing.c tmm_external_bc.c tmm_monitor.c tmm_misfit.c
 
 OBJTMM = $(SRCTMM:.c=.o)

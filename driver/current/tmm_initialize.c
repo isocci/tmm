@@ -1,3 +1,5 @@
+#define EXTERN
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,38 +18,16 @@
 #include "tmm_misfit.h"
 #include "tmm_main.h"
 #include "tmm_initialize.h"
-
-// variables made global -------------------------------------------------------
-Mat Ae, Ai;
-PeriodicMat Aep, Aip;
-TimeDependentMat Aetd, Aitd;
-
-Vec **utdf;
-PetscInt numForcing;
-char *forcingFile[MAXNUMTRACERS];
-
-PeriodicVec bcp[MAXNUMTRACERS];
-Vec **bctd;
-Mat Be, Bi;
-PeriodicMat Bep, Bip;
-TimeDependentMat Betd, Bitd;
-
-PeriodicVec up[MAXNUMTRACERS];
-
-PetscBool applyForcingFromFile = PETSC_FALSE;
-PetscBool applyExternalForcing = PETSC_FALSE;
-
-PeriodicVec Rfsp;
-
-PetscInt numBC;
-//------------------------------------------------------------------------------
+#include "tmm_variables.h"
 
 int initialize(){
         printf("Inizio initialize\n");
+        doMisfit = PETSC_FALSE;
+        rescaleForcing = PETSC_FALSE; //these two lines used to be a definition in main
+
         // local variables copied here from main --------------------------------
         PetscInt numTracers, n;
         Vec templateVec;
-        Vec *v, *vtmp;
 
         Mat Ae, Ai;
 
@@ -59,9 +39,7 @@ int initialize(){
         TimeDependentTimer matrixTimeDependentTimer;
 
         /* Forcing */
-        Vec *uf, *uef;
         PeriodicTimer forcingTimer;
-        PetscScalar *tdfT; /* array for time dependent (nonperiodic) forcing */
         PetscScalar tf0, tf1;
         PetscInt forcingFromFileCutOffStep = -1;
         PetscInt externalForcingCutOffStep = -1;
@@ -70,9 +48,6 @@ int initialize(){
         Vec Rfs;
 
         /* BC's */
-        Vec *bcc, *bcf;
-        char *bcFile[MAXNUMTRACERS];
-        PetscScalar *tdbcT; /* array for time dependent (nonperiodic) forcing */
         PeriodicTimer bcTimer;
         PetscScalar tbc0, tbc1;
         PetscInt bcCutOffStep = -1;
@@ -80,10 +55,6 @@ int initialize(){
         Vec bcTemplateVec;
 
         /* I/O   */
-        char *iniFile[MAXNUMTRACERS];
-        char *outFile[MAXNUMTRACERS];
-        char *bcoutFile[MAXNUMTRACERS];
-        char *ufoutFile[MAXNUMTRACERS], *uefoutFile[MAXNUMTRACERS];
         char pickupFile[PETSC_MAX_PATH_LEN];
         char pickupoutFile[PETSC_MAX_PATH_LEN];
         PetscBool writePickup = PETSC_FALSE;
@@ -97,20 +68,11 @@ int initialize(){
         PetscBool pickupFromFile = PETSC_FALSE;
         PetscBool doTimeAverage = PETSC_FALSE;
         StepTimer avgTimer;
-        char *avgOutFile[MAXNUMTRACERS];
-        Vec *vavg;
         PetscViewer fdavgout[MAXNUMTRACERS];
         PetscBool avgAppendOutput = PETSC_FALSE;
         PetscFileMode AVG_FILE_MODE;
-        FILE *avgfptime;
-        char avgOutTimeFile[PETSC_MAX_PATH_LEN];
-        char *bcavgOutFile[MAXNUMTRACERS];
-        Vec *bcavg;
         PetscViewer fdbcavgout[MAXNUMTRACERS];
-        char *ufavgOutFile[MAXNUMTRACERS], *uefavgOutFile[MAXNUMTRACERS];
-        Vec *ufavg, *uefavg;
         PetscViewer fdufavgout[MAXNUMTRACERS], fduefavgout[MAXNUMTRACERS];
-        FILE *fptime;
         PetscViewer fd, fdp, fdout[MAXNUMTRACERS];
         PetscViewer fdbcout[MAXNUMTRACERS], fdufout[MAXNUMTRACERS], fduefout[MAXNUMTRACERS];
 
@@ -137,12 +99,10 @@ int initialize(){
         PetscMPIInt numProcessors, myId;
         PetscErrorCode ierr;
         PetscBool flg1,flg2;
-//        PetscScalar t1, t2, tc, tf;
-//        PetscInt iLoop, Iterc;
         PetscInt it;
         PetscInt itr, maxValsToRead;
         char tmpFile[PETSC_MAX_PATH_LEN];
-        PetscScalar zero = 0.0; // one = 1.0;
+        PetscScalar zero = 0.0; 
         PetscInt il;
         //----------------------------------------------------------------------
 
