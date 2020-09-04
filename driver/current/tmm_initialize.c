@@ -21,7 +21,7 @@
 #include "tmm_variables.h"
 
 int initialize(){
-        printf("Inizio initialize\n");
+        printf("Beginning of initialize\n");
         doMisfit = PETSC_FALSE;
         rescaleForcing = PETSC_FALSE; //these two lines used to be a definition in main
 
@@ -102,7 +102,7 @@ int initialize(){
         PetscInt it;
         PetscInt itr, maxValsToRead;
         char tmpFile[PETSC_MAX_PATH_LEN];
-        PetscScalar zero = 0.0; 
+        PetscScalar zero = 0.0;
         PetscInt il;
         //----------------------------------------------------------------------
 
@@ -197,6 +197,7 @@ int initialize(){
                 ierr = VecGetSize(templateVec,&n); CHKERRQ(ierr);
         }
 
+printf("Line 200 of initialize\n");
 #if defined (FORSPINUP) || defined (FORJACOBIAN)
         ierr = waitForSignal(0); CHKERRQ(ierr); /* initialize */
 #endif
@@ -293,6 +294,7 @@ int initialize(){
 
         }
 
+printf("Line 297 of initialize\n");
 /* create template vector here if not using profiles */
         if (!useProfiles) {
                 ierr = MatGetSize(Ae,0,&n); CHKERRQ(ierr);
@@ -398,7 +400,7 @@ int initialize(){
                         }
                 }
         }
-
+printf("Line 406 of initialize\n");
 /* Forcing/RHS   */
 /* The tracer(s) can be forced in 3 ways (any combination of which can be turned on): */
 /* 1) Forcing term read from file (can be periodic, constant, or time-dependent) */
@@ -480,7 +482,7 @@ int initialize(){
                                 }
                         } /* TD/constant forcing */
                 } /* periodic/nonperiodic forcing */
-
+printf("Line 485 of initialize\n");
 /*  Initialize data to write out uf */
                 if ((periodicForcing) || (timeDependentForcing)) {
                         for (itr=0; itr<numTracers; itr++) {
@@ -515,7 +517,7 @@ int initialize(){
                                 }
                         }
                 }
-
+printf("Line 520 of initialize\n");
                 applyForcingFromFile = PETSC_TRUE;
 
                 ierr = PetscOptionsGetInt(NULL,NULL,"-forcing_from_file_cutoff_step",&forcingFromFileCutOffStep,&flg1); CHKERRQ(ierr);
@@ -532,7 +534,7 @@ int initialize(){
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"External forcing is being used\n"); CHKERRQ(ierr);
                 ierr = VecDuplicateVecs(templateVec,numTracers,&uef); CHKERRQ(ierr);
                 ierr = iniExternalForcing(time0,Iter0,numTracers,v,uef); CHKERRQ(ierr);
-
+printf("Line 537 of initialize\n");
 /*  Initialize data to write out uef */
                 for (itr=0; itr<numTracers; itr++) {
                         uefoutFile[itr] = (char *) malloc(PETSC_MAX_PATH_LEN*sizeof(char));
@@ -576,7 +578,7 @@ int initialize(){
         } else {
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"No external forcing is being used\n"); CHKERRQ(ierr);
         }
-
+printf("Line 581 of initialize\n");
 /* Prescribed BCs   */
         if (usePrescribedBC) {
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"Prescribed BC's specified\n"); CHKERRQ(ierr);
@@ -633,7 +635,7 @@ int initialize(){
                                         ierr = PetscPrintf(PETSC_COMM_WORLD,"Tracer %d periodic BC basename is %s\n",itr,bcFile[itr]); CHKERRQ(ierr);
                                         bcp[itr].firstTime = PETSC_TRUE; /* initialize periodic vector */
                                 }
-
+printf("Line 638 of initialize\n");
 /*      Load one vector here as a template */
                                 strcpy(tmpFile,"");
                                 sprintf(tmpFile,"%s%02d",bcFile[0],0);
@@ -722,7 +724,7 @@ int initialize(){
                 if (bcCutOffStep>0) {
                         ierr = PetscPrintf(PETSC_COMM_WORLD,"Prescribed BC will be turned off after time step %d\n",bcCutOffStep); CHKERRQ(ierr);
                 }
-
+printf("Line 727 of initialize\n");
 /*  BC output file */
                 for (itr=0; itr<numTracers; itr++) {
                         bcoutFile[itr] = (char *) malloc(PETSC_MAX_PATH_LEN*sizeof(char));
@@ -854,7 +856,7 @@ int initialize(){
         }
 
         ierr = iniTMMWrite(time0,Iter0,numTracers,v,appendOutput); CHKERRQ(ierr);
-
+printf("Line 859 of initialize\n");
 /* initialize monitor */
         ierr = PetscOptionsHasName(NULL,NULL,"-monitor",&useMonitor); CHKERRQ(ierr);
         if (useMonitor) {
@@ -935,7 +937,7 @@ int initialize(){
                         }
                 }
         }
-
+printf("Line 940 of initialize\n");
 /* reinitialize forcing if required */
 #ifdef FORSPINUP
         ierr = PetscViewerBinaryOpen(PETSC_COMM_SELF,"itjac.bin",FILE_MODE_READ,&fd); CHKERRQ(ierr);
@@ -970,6 +972,6 @@ int initialize(){
                 }
         }
 #endif
-        printf("Fine initialize\n");
+        printf("End of initialize\n");
         return 0;
 }
